@@ -13,3 +13,9 @@ DESIGNATION_CONFIG = {
 }
 
 ARCHIVE_DB_PATH = config('ARCHIVE_DB_PATH', default=DATA_DIR / 'archive.dbm', cast=Path)
+ARCHIVE_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+MSG_TEMPLATES_DIR = config('MSG_TEMPLATES_DIR', default=PROJECT_DIR / 'templates', cast=Path)
+APPOINTMENT_TMPL_NAME = config('APPOINTMENT_TMPL_NAME', default='designation.jinja')
+
+NOTIFICATION_HASHTAG = config('NOTIFICATION_HASHTAG', default='#Personal #NombramientosDiarios')

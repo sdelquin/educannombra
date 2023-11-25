@@ -5,6 +5,8 @@ import requests
 
 import settings
 
+from . import utils
+
 
 class Designation:
     archive = shelve.open(settings.ARCHIVE_DB_PATH)
@@ -16,7 +18,9 @@ class Designation:
 
     @property
     def as_markdown(self):
-        return f'{self.local_date()} #Personal #NombramientosDiarios [Nombramiento de {self.edugroup}]({self.url})'
+        return utils.render_message(
+            settings.APPOINTMENT_TMPL_NAME, designation=self, hashtag=settings.NOTIFICATION_HASHTAG
+        )
 
     @property
     def id(self) -> str:
