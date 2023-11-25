@@ -18,7 +18,7 @@ def dispatch(date: datetime.date = None, notify: bool = True, persist: bool = Tr
         elif d.is_published:
             logger.debug('💎 Designation is published!')
             if notify:
-                pass
+                d.notify()
             else:
                 logger.debug('😕 Notification is disabled by user')
             if persist:

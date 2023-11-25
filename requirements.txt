@@ -3,3 +3,4 @@ prettyconf
 jinja2
 typer
 logzero
+python-telegram-bot==13.15

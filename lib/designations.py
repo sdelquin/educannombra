@@ -5,12 +5,14 @@ import requests
 from logzero import logger
 
 import settings
+from lib.notification import TelegramBot
 
 from . import utils
 
 
 class Designation:
     archive = shelve.open(settings.ARCHIVE_DB_PATH)
+    tgbot = TelegramBot()
 
     def __init__(self, date: datetime.date, baseurl: str, edugroup: str):
         self.date = date
@@ -46,6 +48,9 @@ class Designation:
     def save(self) -> None:
         logger.debug('💾 Saving designation into the database')
         self.archive[self.id] = True
+
+    def notify(self, telegram_chat_id: str = settings.TELEGRAM_CHAT_ID) -> None:
+        self.tgbot.send(telegram_chat_id, self.as_markdown)
 
     def __str__(self):
         return f'Nombramiento de {self.edugroup}: {self.url}'
