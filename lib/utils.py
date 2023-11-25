@@ -1,3 +1,4 @@
+import datetime
 import functools
 from pathlib import Path
 
@@ -16,3 +17,7 @@ def render_message(template_name: Path, **args) -> str:
     jinja_env = init_jinja()
     template = jinja_env.get_template(template_name)
     return template.render(**args)
+
+
+def build_date_from_str(date_input: str) -> datetime.date:
+    return datetime.datetime.strptime(date_input, '%Y-%m-%d').date()
