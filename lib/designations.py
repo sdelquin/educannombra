@@ -1,27 +1,44 @@
 import datetime
+import shelve
 
 import requests
 
+import settings
+
 
 class Designation:
+    archive = shelve.open(settings.ARCHIVE_DB_PATH)
+
     def __init__(self, date: datetime.date, baseurl: str, edugroup: str):
         self.date = date
         self.url = self.build_url(baseurl)
         self.edugroup = edugroup
 
+    @property
+    def as_markdown(self):
+        return f'{self.local_date()} #Personal #NombramientosDiarios [Nombramiento de {self.edugroup}]({self.url})'
+
+    @property
+    def id(self) -> str:
+        return self.url
+
+    @property
+    def is_published(self) -> bool:
+        return requests.get(self.url).status_code == 200
+
+    @property
+    def already_dispatched(self) -> bool:
+        return self.archive.get(self.id) is not None
+
     def build_url(self, baseurl: str):
         return baseurl.format(date=self.local_date(sep='-', long_year=False))
-
-    def exists(self):
-        return requests.get(self.url).status_code == 200
 
     def local_date(self, sep: str = '/', long_year: bool = True) -> str:
         year_format = 'Y' if long_year else 'y'
         return self.date.strftime(f'%d{sep}%m{sep}%{year_format}')
 
-    @property
-    def as_markdown(self):
-        return f'{self.local_date()} #Personal #NombramientosDiarios [Nombramiento de {self.edugroup}]({self.url})'
+    def save(self) -> None:
+        self.archive[self.id] = True
 
     def __str__(self):
         return f'NOMBRAMIENTO {self.edugroup}: {self.url}'
