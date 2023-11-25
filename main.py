@@ -2,6 +2,7 @@ import datetime
 import glob
 import os
 
+import logzero
 import typer
 
 import settings
@@ -25,6 +26,7 @@ def run(
     ),
 ):
     """Notify educational designations."""
+    logger.setLevel(getattr(logzero, loglevel.upper()))
     dispatcher.dispatch(
         utils.build_date_from_str(date), not disable_notifications, not disable_persist
     )
