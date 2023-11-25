@@ -7,6 +7,7 @@ import typer
 import settings
 from lib import dispatcher, utils
 
+logger = utils.init_logger()
 app = typer.Typer(add_completion=False)
 
 
@@ -35,10 +36,11 @@ def clean(force: bool = typer.Option(False, '--force', '-f', help='Force clean. 
     if force or typer.confirm('Are you sure to delete archive database?'):
         for file_path in glob.glob(str(settings.ARCHIVE_DB_PATH) + '*'):
             os.remove(file_path)
+        logger.info('🧽 DB is clean!')
 
 
 if __name__ == '__main__':
     try:
         app()
     except Exception as err:
-        print(err)
+        logger.exception(err)

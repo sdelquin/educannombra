@@ -19,3 +19,7 @@ MSG_TEMPLATES_DIR = config('MSG_TEMPLATES_DIR', default=PROJECT_DIR / 'templates
 APPOINTMENT_TMPL_NAME = config('APPOINTMENT_TMPL_NAME', default='designation.jinja')
 
 NOTIFICATION_HASHTAG = config('NOTIFICATION_HASHTAG', default='#Personal #NombramientosDiarios')
+
+LOGFILE = config('LOGFILE', default=PROJECT_DIR / (PROJECT_NAME + '.log'), cast=Path)
+LOGFILE_SIZE = config('LOGFILE_SIZE', cast=float, default=1e6)
+LOGFILE_BACKUP_COUNT = config('LOGFILE_BACKUP_COUNT', cast=int, default=3)

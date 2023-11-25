@@ -2,3 +2,4 @@ requests
 prettyconf
 jinja2
 typer
+logzero

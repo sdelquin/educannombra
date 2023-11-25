@@ -2,6 +2,7 @@ import datetime
 import shelve
 
 import requests
+from logzero import logger
 
 import settings
 
@@ -28,6 +29,7 @@ class Designation:
 
     @property
     def is_published(self) -> bool:
+        logger.debug('❓ Checking if designation is published')
         return requests.get(self.url).status_code == 200
 
     @property
@@ -42,7 +44,8 @@ class Designation:
         return self.date.strftime(f'%d{sep}%m{sep}%{year_format}')
 
     def save(self) -> None:
+        logger.debug('💾 Saving designation into the database')
         self.archive[self.id] = True
 
     def __str__(self):
-        return f'NOMBRAMIENTO {self.edugroup}: {self.url}'
+        return f'Nombramiento de {self.edugroup}: {self.url}'
