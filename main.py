@@ -16,10 +16,10 @@ app = typer.Typer(add_completion=False)
 def run(
     date: str = typer.Argument(datetime.date.today(), help='Designation date in format YYYY-MM-DD'),
     disable_notifications: bool = typer.Option(
-        False, '--disable-notifications', '-x', help='Disable notifications'
+        False, '--disable-notifications', '-N', help='Disable notifications'
     ),
     disable_persist: bool = typer.Option(
-        False, '--disable-persist', '-w', help='Disable persist in DB'
+        False, '--disable-persist', '-P', help='Disable persist in DB'
     ),
     loglevel: str = typer.Option(
         'DEBUG', '--loglevel', '-l', help='Log level (debug, info, error)'

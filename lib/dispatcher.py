@@ -4,25 +4,25 @@ from logzero import logger
 
 import settings
 
-from .designations import Designation
+from .resolution import Resolution
 
 
 def dispatch(date: datetime.date = None, notify: bool = True, persist: bool = True):
     date = date or datetime.date.today()
-    logger.info(f'👷‍♂️ Dispatching designations for {date}')
+    logger.info(f'👷‍♂️ Dispatching designation resolutions for {date}')
     for edugroup, baseurl in settings.DESIGNATION_CONFIG.items():
-        d = Designation(date, baseurl, edugroup)
-        logger.info(f'🟣 {d}')
-        if d.already_dispatched():
-            logger.debug('👋 Designation was already dispatched. Discarding!')
-        elif d.download_resolution():
+        res = Resolution(date, baseurl, edugroup)
+        logger.info(f'🟣 {res}')
+        if res.already_dispatched():
+            logger.debug('👋 Resolution was already dispatched. Discarding!')
+        elif res.download_resolution():
             if notify:
-                d.notify()
+                res.notify()
             else:
                 logger.debug('🛑 Notification is disabled by user')
             if persist:
-                d.save()
+                res.save()
             else:
                 logger.debug('🛑 Persistence is disabled by user')
         else:
-            logger.debug('💤 Designation is not yet published')
+            logger.debug('💤 Resolution is not yet published')

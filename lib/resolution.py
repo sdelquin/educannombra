@@ -13,7 +13,7 @@ from lib.notification import TelegramBot
 from . import utils
 
 
-class Designation:
+class Resolution:
     archive = shelve.open(settings.ARCHIVE_DB_PATH)
     tgbot = TelegramBot()
 
@@ -25,20 +25,32 @@ class Designation:
     @property
     def as_markdown(self):
         return utils.render_message(
-            settings.APPOINTMENT_TMPL_NAME, designation=self, hashtag=settings.NOTIFICATION_HASHTAG
+            settings.RESOLUTION_TMPL_NAME, resolution=self, hashtag=settings.NOTIFICATION_HASHTAG
         )
 
     @property
     def id(self) -> str:
         return self.url
 
+    @property
+    def num_designations(self) -> int:
+        logger.debug('🍿 Getting number of designations')
+        pdf = PyPDF2.PdfReader(self.resolution)
+        last_page = pdf.pages[-1]
+        contents = last_page.extract_text()
+        if m := re.search(r'N[uú]mero total de nombramientos:\s*(\d+)', contents, re.I):
+            num_entries = int(m[1])
+        else:
+            num_entries = 0
+        return num_entries
+
     def already_dispatched(self) -> bool:
         return self.archive.get(self.id) is not None
 
     def build_url(self, baseurl: str):
-        return baseurl.format(date=self.local_date(sep='-', long_year=False))
+        return baseurl.format(date=self.format_published_date(sep='-', long_year=False))
 
-    def local_date(self, sep: str = '/', long_year: bool = True) -> str:
+    def format_published_date(self, sep: str = '/', long_year: bool = True) -> str:
         year_format = 'Y' if long_year else 'y'
         return self.date.strftime(f'%d{sep}%m{sep}%{year_format}')
 
@@ -57,17 +69,6 @@ class Designation:
                 f.write(response.content)
             return True
         return False
-
-    def get_num_entries(self) -> int:
-        logger.debug('🍿 Getting number of entries')
-        pdf = PyPDF2.PdfReader(self.resolution)
-        last_page = pdf.pages[-1]
-        contents = last_page.extract_text()
-        if m := re.search(r'N[uú]mero total de nombramientos:\s*(\d+)', contents, re.I):
-            num_entries = int(m[1])
-        else:
-            num_entries = 0
-        return num_entries
 
     def __str__(self):
         return f'Nombramiento de {self.edugroup}: {self.url}'

@@ -19,7 +19,7 @@ TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = config('TELEGRAM_CHAT_ID')
 
 MSG_TEMPLATES_DIR = config('MSG_TEMPLATES_DIR', default=PROJECT_DIR / 'templates', cast=Path)
-APPOINTMENT_TMPL_NAME = config('APPOINTMENT_TMPL_NAME', default='designation.jinja')
+RESOLUTION_TMPL_NAME = config('RESOLUTION_TMPL_NAME', default='resolution.jinja')
 
 NOTIFICATION_HASHTAG = config('NOTIFICATION_HASHTAG', default='#Personal #NombramientosDiarios')
 
