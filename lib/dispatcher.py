@@ -9,7 +9,7 @@ from .resolution import Resolution
 
 def dispatch(date: datetime.date = None, notify: bool = True, persist: bool = True):
     date = date or datetime.date.today()
-    logger.info(f'👷‍♂️ Dispatching designation resolutions for {date}')
+    logger.info(f'🍕 Dispatching designation resolutions for {date}')
     for edugroup, baseurl in settings.DESIGNATION_CONFIG.items():
         res = Resolution(date, baseurl, edugroup)
         logger.info(f'🟣 {res}')
