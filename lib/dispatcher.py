@@ -13,10 +13,9 @@ def dispatch(date: datetime.date = None, notify: bool = True, persist: bool = Tr
     for edugroup, baseurl in settings.DESIGNATION_CONFIG.items():
         d = Designation(date, baseurl, edugroup)
         logger.info(f'🟣 {d}')
-        if d.already_dispatched:
+        if d.already_dispatched():
             logger.debug('👋 Designation was already dispatched. Discarding!')
-        elif d.is_published:
-            logger.debug('💎 Designation is published!')
+        elif d.download_resolution():
             if notify:
                 d.notify()
             else:

@@ -1,6 +1,9 @@
 import datetime
+import re
 import shelve
+import tempfile
 
+import PyPDF2
 import requests
 from logzero import logger
 
@@ -29,12 +32,6 @@ class Designation:
     def id(self) -> str:
         return self.url
 
-    @property
-    def is_published(self) -> bool:
-        logger.debug('❓ Checking if designation is published')
-        return requests.get(self.url).status_code == 200
-
-    @property
     def already_dispatched(self) -> bool:
         return self.archive.get(self.id) is not None
 
@@ -51,6 +48,26 @@ class Designation:
 
     def notify(self, telegram_chat_id: str = settings.TELEGRAM_CHAT_ID) -> None:
         self.tgbot.send(telegram_chat_id, self.as_markdown)
+
+    def download_resolution(self) -> bool:
+        logger.debug('⬇️ Downloading resolution for designations')
+        if (response := requests.get(self.url)).status_code == 200:
+            self.resolution = tempfile.NamedTemporaryFile().name
+            with open(self.resolution, 'wb') as f:
+                f.write(response.content)
+            return True
+        return False
+
+    def get_num_entries(self) -> int:
+        logger.debug('🍿 Getting number of entries')
+        pdf = PyPDF2.PdfReader(self.resolution)
+        last_page = pdf.pages[-1]
+        contents = last_page.extract_text()
+        if m := re.search(r'N[uú]mero total de nombramientos:\s*(\d+)', contents, re.I):
+            num_entries = int(m[1])
+        else:
+            num_entries = 0
+        return num_entries
 
     def __str__(self):
         return f'Nombramiento de {self.edugroup}: {self.url}'
