@@ -19,10 +19,10 @@ def dispatch(date: datetime.date = None, notify: bool = True, persist: bool = Tr
             if notify:
                 d.notify()
             else:
-                logger.debug('😕 Notification is disabled by user')
+                logger.debug('🛑 Notification is disabled by user')
             if persist:
                 d.save()
             else:
-                logger.debug('😕 Persistence is disabled by user')
+                logger.debug('🛑 Persistence is disabled by user')
         else:
-            logger.debug('🚩 Designation is not yet published')
+            logger.debug('💤 Designation is not yet published')

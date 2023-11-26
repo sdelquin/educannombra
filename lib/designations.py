@@ -50,7 +50,7 @@ class Designation:
         self.tgbot.send(telegram_chat_id, self.as_markdown)
 
     def download_resolution(self) -> bool:
-        logger.debug('⬇️ Downloading resolution for designations')
+        logger.debug('⭐ Downloading resolution for designations')
         if (response := requests.get(self.url)).status_code == 200:
             self.resolution = tempfile.NamedTemporaryFile().name
             with open(self.resolution, 'wb') as f:
