@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import telegramtk
 from prettyconf import config
 
 PROJECT_DIR = Path(__file__).parent
@@ -17,6 +18,7 @@ ARCHIVE_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = config('TELEGRAM_CHAT_ID')
+telegramtk.init(TELEGRAM_BOT_TOKEN)
 
 MSG_TEMPLATES_DIR = config('MSG_TEMPLATES_DIR', default=PROJECT_DIR / 'templates', cast=Path)
 RESOLUTION_TMPL_NAME = config('RESOLUTION_TMPL_NAME', default='resolution.jinja')

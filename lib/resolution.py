@@ -5,17 +5,16 @@ import tempfile
 
 import PyPDF2
 import requests
+import telegramtk
 from logzero import logger
 
 import settings
-from lib.notification import TelegramBot
 
 from . import utils
 
 
 class Resolution:
     archive = shelve.open(settings.ARCHIVE_DB_PATH)
-    tgbot = TelegramBot()
 
     def __init__(self, date: datetime.date, baseurl: str, edugroup: str):
         self.date = date
@@ -25,7 +24,9 @@ class Resolution:
     @property
     def as_markdown(self):
         return utils.render_message(
-            settings.RESOLUTION_TMPL_NAME, resolution=self, hashtag=settings.NOTIFICATION_HASHTAG
+            settings.RESOLUTION_TMPL_NAME,
+            resolution=self,
+            hashtag=telegramtk.utils.escape_markdown(settings.NOTIFICATION_HASHTAG),
         )
 
     @property
@@ -59,7 +60,7 @@ class Resolution:
         self.archive[self.id] = True
 
     def notify(self, telegram_chat_id: str = settings.TELEGRAM_CHAT_ID) -> None:
-        self.tgbot.send(telegram_chat_id, self.as_markdown)
+        telegramtk.send_message(telegram_chat_id, self.as_markdown)
 
     def download_resolution(self) -> bool:
         logger.debug('⭐ Downloading resolution for designations')
